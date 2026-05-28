@@ -197,19 +197,40 @@
     .premise-desc { font-size: 0.98rem; color: var(--color-text-secondary); line-height: 1.45; }
 
     /* ===== Slide 5 — Cronograma ===== */
+    .slide--chart { padding: 3vh 3vw; }
+    .slide--chart .chart-header { margin-bottom: 0.75rem; }
+    .slide--chart .label { margin-bottom: 0.3rem; }
+    .slide--chart h1 { font-size: 1.5rem; margin-bottom: 0; }
+
     .cronograma-wrapper {
       flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-top: 0.5rem;
       min-height: 0;
+      width: 100%;
     }
-    .cronograma-wrapper img {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-    }
+    .cronograma-svg { width: 100%; height: 100%; }
+
+    .cronograma-svg .freeze-col { fill: #FBF1DD; opacity: 0.65; }
+    .cronograma-svg .bf-col { fill: #FBE2B0; opacity: 0.65; }
+    .cronograma-svg .freeze-col-header { fill: #FBF1DD; }
+    .cronograma-svg .bf-col-header { fill: #FBE2B0; }
+    .cronograma-svg .bar-bloco-1 { fill: #26C9A8; }
+    .cronograma-svg .bar-bloco-2 { fill: #1A9D7A; }
+    .cronograma-svg .bar-bloco-3 { fill: #9B59E6; }
+    .cronograma-svg .bar-bloco-4 { fill: #EA8B3A; }
+    .cronograma-svg .ms-name { font-size: 17px; fill: #1f1f1f; font-weight: 500; }
+    .cronograma-svg .month-label { font-size: 19px; font-weight: 700; fill: #222; }
+    .cronograma-svg .mes-label { font-size: 14px; fill: #888; }
+    .cronograma-svg .bloco-label { font-size: 18px; font-weight: 700; fill: white; }
+    .cronograma-svg .header-label { font-size: 16px; font-weight: 700; fill: #444; }
+    .cronograma-svg .freeze-text { font-size: 14px; font-weight: 700; fill: #B8862E; letter-spacing: 0.05em; }
+    .cronograma-svg .bf-text { font-size: 14px; font-weight: 700; fill: #9A5A1F; letter-spacing: 0.05em; }
+    .cronograma-svg .golive-text { font-size: 15px; font-weight: 700; fill: #1A9D7A; }
+    .cronograma-svg .golive-marker { fill: #1A9D7A; stroke: white; stroke-width: 2; }
+    .cronograma-svg .separator { stroke: #C8C8C8; stroke-width: 1; }
+    .cronograma-svg .grid-line { stroke: #E8E8E8; stroke-width: 1; }
 
     /* ===== Slide 6 — Comunicação ===== */
     .comm-grid {
@@ -404,12 +425,157 @@
       </div>
     </section>
 
-    <!-- Slide 5: Cronograma -->
-    <section class="slide" data-slide="5">
-      <p class="label">Slide 05 · Cronograma</p>
-      <h1>Cronograma do projeto</h1>
+    <!--
+      Slide 5: Cronograma — sistema de coordenadas SVG
+      Timeline x:  Jun=450  Jul=600  Aug=750  Sep=900  Oct=1050  Nov=1200  Dec=1350  Fim=1500
+      Cada mês = 150 unidades. Meio do mês = +75.
+    -->
+    <section class="slide slide--chart" data-slide="5">
+      <header class="chart-header">
+        <p class="label">Slide 05 · Cronograma</p>
+        <h1>Cronograma do projeto</h1>
+      </header>
       <div class="cronograma-wrapper">
-        <img src="cronograma.png" alt="Cronograma do projeto com 4 blocos, de junho a dezembro de 2026.">
+        <svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" class="cronograma-svg" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Cronograma do projeto de junho a dezembro de 2026">
+
+          <!-- Column highlights -->
+          <rect class="freeze-col" x="1050" y="0" width="150" height="890"/>
+          <rect class="bf-col" x="1200" y="0" width="150" height="890"/>
+          <rect class="freeze-col-header" x="1050" y="0" width="150" height="50"/>
+          <rect class="bf-col-header" x="1200" y="0" width="150" height="50"/>
+
+          <!-- Freezing / Black Friday -->
+          <text class="freeze-text" x="1125" y="22" text-anchor="middle">FREEZING</text>
+          <text class="freeze-text" x="1125" y="40" text-anchor="middle">PERIOD</text>
+          <text class="bf-text" x="1275" y="22" text-anchor="middle">BLACK FRIDAY</text>
+          <text class="bf-text" x="1275" y="40" text-anchor="middle">WEEK</text>
+
+          <!-- Month headers (centro de cada mês = x + 75) -->
+          <text class="month-label" x="525" y="78" text-anchor="middle">Jun/26</text>
+          <text class="mes-label" x="525" y="98" text-anchor="middle">Mês 1</text>
+          <text class="month-label" x="675" y="78" text-anchor="middle">Jul/26</text>
+          <text class="mes-label" x="675" y="98" text-anchor="middle">Mês 2</text>
+          <text class="month-label" x="825" y="78" text-anchor="middle">Aug/26</text>
+          <text class="mes-label" x="825" y="98" text-anchor="middle">Mês 3</text>
+          <text class="month-label" x="975" y="78" text-anchor="middle">Sep/26</text>
+          <text class="mes-label" x="975" y="98" text-anchor="middle">Mês 4</text>
+          <text class="month-label" x="1125" y="78" text-anchor="middle">Oct/26</text>
+          <text class="mes-label" x="1125" y="98" text-anchor="middle">Mês 5</text>
+          <text class="month-label" x="1275" y="78" text-anchor="middle">Nov/26</text>
+          <text class="mes-label" x="1275" y="98" text-anchor="middle">Mês 6</text>
+          <text class="month-label" x="1425" y="78" text-anchor="middle">Dec/26</text>
+          <text class="mes-label" x="1425" y="98" text-anchor="middle">Mês 7</text>
+
+          <!-- Column headers -->
+          <text class="header-label" x="65" y="88" text-anchor="middle">BLOCO</text>
+          <text class="header-label" x="150" y="88">Milestones</text>
+
+          <!-- Header separator -->
+          <line class="separator" x1="0" y1="105" x2="1500" y2="105"/>
+
+          <!-- Vertical grid lines -->
+          <line class="grid-line" x1="450" y1="110" x2="450" y2="890"/>
+          <line class="grid-line" x1="600" y1="110" x2="600" y2="890"/>
+          <line class="grid-line" x1="750" y1="110" x2="750" y2="890"/>
+          <line class="grid-line" x1="900" y1="110" x2="900" y2="890"/>
+          <line class="grid-line" x1="1050" y1="110" x2="1050" y2="890"/>
+          <line class="grid-line" x1="1200" y1="110" x2="1200" y2="890"/>
+          <line class="grid-line" x1="1350" y1="110" x2="1350" y2="890"/>
+          <line class="grid-line" x1="1500" y1="110" x2="1500" y2="890"/>
+
+          <!-- BLOCO 1 -->
+          <rect class="bar-bloco-1" x="15" y="115" width="100" height="170" rx="8" ry="8"/>
+          <text class="bloco-label" x="65" y="200" text-anchor="middle" dominant-baseline="middle">BLOCO 1</text>
+
+          <!-- Módulo base Magento: Jun start → meio de Jul (sem go-live) -->
+          <text class="ms-name" x="150" y="140" dominant-baseline="middle">Módulo base Magento</text>
+          <rect class="bar-bloco-1" x="450" y="124" width="225" height="32" rx="8" ry="8"/>
+
+          <!-- Crédito EV: meio de Jul → fim de Ago (go-live na linha Ago/Sep) -->
+          <text class="ms-name" x="150" y="200" dominant-baseline="middle">Crédito EV + mig. tokenização</text>
+          <rect class="bar-bloco-1" x="675" y="184" width="225" height="32" rx="8" ry="8"/>
+          <polygon class="golive-marker" points="900,191 909,200 900,209 891,200"/>
+          <text class="golive-text" x="916" y="200" dominant-baseline="middle">GO-LIVE</text>
+
+          <!-- Pix EV: meio de Ago → fim de Ago -->
+          <text class="ms-name" x="150" y="260" dominant-baseline="middle">Pix EV</text>
+          <rect class="bar-bloco-1" x="825" y="244" width="75" height="32" rx="8" ry="8"/>
+          <polygon class="golive-marker" points="900,251 909,260 900,269 891,260"/>
+          <text class="golive-text" x="916" y="260" dominant-baseline="middle">GO-LIVE</text>
+
+          <!-- BLOCO 2 -->
+          <rect class="bar-bloco-2" x="15" y="295" width="100" height="170" rx="8" ry="8"/>
+          <text class="bloco-label" x="65" y="380" text-anchor="middle" dominant-baseline="middle">BLOCO 2</text>
+
+          <!-- Crédito GC: meio de Ago → fim de Sep (go-live na linha Sep/Oct) -->
+          <text class="ms-name" x="150" y="320" dominant-baseline="middle">Crédito GC + mig. tokenização</text>
+          <rect class="bar-bloco-2" x="825" y="304" width="225" height="32" rx="8" ry="8"/>
+          <polygon class="golive-marker" points="1050,311 1059,320 1050,329 1041,320"/>
+          <text class="golive-text" x="1066" y="320" dominant-baseline="middle">GO-LIVE</text>
+
+          <!-- Pix GC: meio de Ago → fim de Sep -->
+          <text class="ms-name" x="150" y="380" dominant-baseline="middle">Pix GC</text>
+          <rect class="bar-bloco-2" x="825" y="364" width="225" height="32" rx="8" ry="8"/>
+          <polygon class="golive-marker" points="1050,371 1059,380 1050,389 1041,380"/>
+          <text class="golive-text" x="1066" y="380" dominant-baseline="middle">GO-LIVE</text>
+
+          <!-- Boleto EV: meio de Ago → fim de Ago -->
+          <text class="ms-name" x="150" y="440" dominant-baseline="middle">Boleto EV</text>
+          <rect class="bar-bloco-2" x="825" y="424" width="75" height="32" rx="8" ry="8"/>
+          <polygon class="golive-marker" points="900,431 909,440 900,449 891,440"/>
+          <text class="golive-text" x="916" y="440" dominant-baseline="middle">GO-LIVE</text>
+
+          <!-- BLOCO 3 -->
+          <rect class="bar-bloco-3" x="15" y="475" width="100" height="290" rx="8" ry="8"/>
+          <text class="bloco-label" x="65" y="620" text-anchor="middle" dominant-baseline="middle">BLOCO 3</text>
+
+          <!-- Google Pay EV: meio de Nov → fim de Dec -->
+          <text class="ms-name" x="150" y="500" dominant-baseline="middle">Google Pay EV</text>
+          <rect class="bar-bloco-3" x="1275" y="484" width="225" height="32" rx="8" ry="8"/>
+          <polygon class="golive-marker" points="1500,491 1509,500 1500,509 1491,500"/>
+          <text class="golive-text" x="1516" y="500" dominant-baseline="middle">GO-LIVE</text>
+
+          <!-- Apple Pay EV: meio de Nov → fim de Dec -->
+          <text class="ms-name" x="150" y="560" dominant-baseline="middle">Apple Pay EV</text>
+          <rect class="bar-bloco-3" x="1275" y="544" width="225" height="32" rx="8" ry="8"/>
+          <polygon class="golive-marker" points="1500,551 1509,560 1500,569 1491,560"/>
+          <text class="golive-text" x="1516" y="560" dominant-baseline="middle">GO-LIVE</text>
+
+          <!-- Boleto GC: meio de Sep → fim de Dec -->
+          <text class="ms-name" x="150" y="620" dominant-baseline="middle">Boleto GC</text>
+          <rect class="bar-bloco-3" x="975" y="604" width="525" height="32" rx="8" ry="8"/>
+          <polygon class="golive-marker" points="1500,611 1509,620 1500,629 1491,620"/>
+          <text class="golive-text" x="1516" y="620" dominant-baseline="middle">GO-LIVE</text>
+
+          <!-- Pay by link: meio de Sep → fim de Dec -->
+          <text class="ms-name" x="150" y="680" dominant-baseline="middle">Pay by link</text>
+          <rect class="bar-bloco-3" x="975" y="664" width="525" height="32" rx="8" ry="8"/>
+          <polygon class="golive-marker" points="1500,671 1509,680 1500,689 1491,680"/>
+          <text class="golive-text" x="1516" y="680" dominant-baseline="middle">GO-LIVE</text>
+
+          <!-- Assinaturas EV+GC: meio de Oct → fim de Dec -->
+          <text class="ms-name" x="150" y="740" dominant-baseline="middle">Assinaturas EV+GC + mig. tokenização</text>
+          <rect class="bar-bloco-3" x="1125" y="724" width="375" height="32" rx="8" ry="8"/>
+          <polygon class="golive-marker" points="1500,731 1509,740 1500,749 1491,740"/>
+          <text class="golive-text" x="1516" y="740" dominant-baseline="middle">GO-LIVE</text>
+
+          <!-- BLOCO 4 -->
+          <rect class="bar-bloco-4" x="15" y="775" width="100" height="110" rx="8" ry="8"/>
+          <text class="bloco-label" x="65" y="830" text-anchor="middle" dominant-baseline="middle">BLOCO 4</text>
+
+          <!-- Google Pay GC: final de Nov → fim de Dec -->
+          <text class="ms-name" x="150" y="800" dominant-baseline="middle">Google Pay GC</text>
+          <rect class="bar-bloco-4" x="1335" y="784" width="165" height="32" rx="8" ry="8"/>
+          <polygon class="golive-marker" points="1500,791 1509,800 1500,809 1491,800"/>
+          <text class="golive-text" x="1516" y="800" dominant-baseline="middle">GO-LIVE</text>
+
+          <!-- Apple Pay GC: final de Nov → fim de Dec -->
+          <text class="ms-name" x="150" y="860" dominant-baseline="middle">Apple Pay GC</text>
+          <rect class="bar-bloco-4" x="1335" y="844" width="165" height="32" rx="8" ry="8"/>
+          <polygon class="golive-marker" points="1500,851 1509,860 1500,869 1491,860"/>
+          <text class="golive-text" x="1516" y="860" dominant-baseline="middle">GO-LIVE</text>
+
+        </svg>
       </div>
     </section>
 
