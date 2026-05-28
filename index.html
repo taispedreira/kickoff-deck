@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kickoff — Integração de novo gateway de pagamento</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --color-text: #1a1a1a;
+      --color-text-secondary: #5a5a5a;
+      --color-text-tertiary: #888888;
+      --color-border: #e6e6e3;
+      --color-bg: #ffffff;
+      --color-bg-secondary: #f7f7f3;
+
+      --c-teal-50: #E1F5EE;
+      --c-teal-200: #5DCAA5;
+      --c-teal-700: #0F6E56;
+      --c-purple-50: #EEEDFE;
+      --c-purple-700: #3C3489;
+      --c-amber-50: #FAEEDA;
+      --c-amber-700: #854F0B;
+
+      --bloco-1: #26C9A8;
+      --bloco-2: #1A9D7A;
+      --bloco-3: #9B59E6;
+      --bloco-4: #EA8B3A;
+
+      --font: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+      font-family: var(--font);
+      font-weight: 400;
+      color: var(--color-text);
+      background: #1a1a1a;
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .deck { position: relative; width: 100vw; height: 100vh; }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      background: var(--color-bg);
+      padding: 6vh 8vw;
+      display: none;
+      flex-direction: column;
+      justify-content: flex-start;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    .slide.active { display: flex; opacity: 1; }
+    .slide--cover { justify-content: center; padding: 0 8vw; position: relative; }
+    .slide--cover .stripe {
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 8px; display: flex;
+    }
+    .slide--cover .stripe span { flex: 1; }
+
+    .label {
+      font-size: 0.8rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-text-secondary);
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    h1 {
+      font-size: 2.6rem;
+      font-weight: 600;
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+      margin-bottom: 1.5rem;
+      color: var(--color-text);
+    }
+
+    /* ===== Slide 1 — Capa ===== */
+    .cover-content { max-width: 85%; }
+    .cover-content .label { color: var(--c-teal-700); }
+    .cover-content h1 { font-size: 3.2rem; margin-bottom: 1.25rem; }
+    .cover-content .subtitle {
+      font-size: 1.35rem; color: var(--color-text-secondary);
+      margin-bottom: 3rem;
+    }
+    .cover-content .date { font-size: 1rem; color: var(--color-text-tertiary); }
+
+    /* ===== Slide 2 — Agenda ===== */
+    .agenda-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+    .card {
+      background: white;
+      border: 1px solid var(--color-border);
+      border-radius: 14px;
+      padding: 1.75rem;
+    }
+    .card-icon {
+      width: 60px; height: 60px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1.25rem;
+      font-size: 28px;
+    }
+    .agenda-card--teal .card-icon { background: var(--c-teal-50); color: var(--c-teal-700); }
+    .agenda-card--purple .card-icon { background: var(--c-purple-50); color: var(--c-purple-700); }
+    .agenda-card--amber .card-icon { background: var(--c-amber-50); color: var(--c-amber-700); }
+    .card-label {
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .agenda-card--teal .card-label { color: var(--c-teal-700); }
+    .agenda-card--purple .card-label { color: var(--c-purple-700); }
+    .agenda-card--amber .card-label { color: var(--c-amber-700); }
+    .card-title { font-size: 1.35rem; font-weight: 600; margin-bottom: 0.5rem; line-height: 1.3; }
+    .card-desc { font-size: 1rem; color: var(--color-text-secondary); line-height: 1.5; }
+
+    /* ===== Slide 3 — Por que ===== */
+    .lead {
+      font-size: 1.65rem;
+      font-weight: 500;
+      line-height: 1.4;
+      margin: 0.75rem 0 3rem;
+      max-width: 85%;
+    }
+    .from-to {
+      display: flex; align-items: center;
+      gap: 2.5rem; max-width: 75%;
+    }
+    .from-to-card {
+      flex: 1;
+      padding: 1.5rem 2rem;
+      border: 1px solid var(--color-border);
+      border-radius: 10px;
+      text-align: center;
+    }
+    .from-to-card--highlight {
+      background: var(--c-teal-50);
+      border-color: var(--c-teal-200);
+    }
+    .from-to-label {
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-text-tertiary);
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .from-to-card--highlight .from-to-label { color: var(--c-teal-700); }
+    .from-to-text { font-size: 1.2rem; color: var(--color-text-secondary); }
+    .from-to-card--highlight .from-to-text { color: var(--c-teal-700); font-weight: 600; }
+    .from-to-arrow { font-size: 2.5rem; color: var(--c-teal-700); }
+
+    /* ===== Slide 4 — Premissas (Opção A) ===== */
+    .premise-list {
+      margin-top: 0.5rem;
+      border-top: 1px solid var(--color-border);
+    }
+    .premise-item {
+      display: flex;
+      align-items: center;
+      gap: 1.75rem;
+      padding: 1.1rem 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .premise-num {
+      font-size: 2.4rem;
+      font-weight: 600;
+      color: var(--c-teal-700);
+      min-width: 60px;
+      line-height: 1;
+    }
+    .premise-icon {
+      font-size: 28px;
+      color: var(--c-teal-700);
+      flex-shrink: 0;
+    }
+    .premise-content { flex: 1; }
+    .premise-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.2rem; }
+    .premise-desc { font-size: 0.98rem; color: var(--color-text-secondary); line-height: 1.45; }
+
+    /* ===== Slide 5 — Cronograma ===== */
+    .cronograma-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 0.5rem;
+      min-height: 0;
+    }
+    .cronograma-wrapper img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    /* ===== Slide 6 — Comunicação ===== */
+    .comm-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin: 0.5rem 0 1.5rem;
+    }
+    .comm-card .card-icon {
+      background: var(--c-amber-50);
+      color: var(--c-amber-700);
+      width: 56px; height: 56px;
+      font-size: 26px;
+    }
+    .comm-card .card-label { color: var(--c-amber-700); }
+    .comm-callout {
+      background: var(--color-bg-secondary);
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.85rem;
+    }
+    .comm-callout i {
+      font-size: 22px;
+      color: var(--color-text-secondary);
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .comm-callout p {
+      font-size: 1rem;
+      color: var(--color-text-secondary);
+      line-height: 1.5;
+    }
+
+    /* ===== Slide 7 — Perguntas ===== */
+    .qa-content { text-align: center; }
+    .qa-icon {
+      width: 130px; height: 130px;
+      border-radius: 50%;
+      background: var(--c-teal-50);
+      color: var(--c-teal-700);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 2rem;
+      font-size: 64px;
+    }
+    .qa-content h1 { font-size: 3.5rem; margin-bottom: 1rem; }
+    .qa-content .subtitle { font-size: 1.4rem; color: var(--color-text-secondary); }
+
+    /* ===== Navegação ===== */
+    .counter {
+      position: fixed;
+      bottom: 20px; right: 20px;
+      background: rgba(0, 0, 0, 0.55);
+      color: white;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      z-index: 100;
+      font-variant-numeric: tabular-nums;
+      backdrop-filter: blur(8px);
+    }
+    .hint {
+      position: fixed;
+      bottom: 20px; left: 20px;
+      color: rgba(255, 255, 255, 0.55);
+      font-size: 12px;
+      z-index: 100;
+      pointer-events: none;
+      transition: opacity 0.6s 4s;
+    }
+    .hint.fade { opacity: 0; }
+
+    @media (max-width: 1200px) {
+      .slide { padding: 5vh 5vw; }
+      h1 { font-size: 2.1rem; }
+      .cover-content h1 { font-size: 2.6rem; }
+      .lead { font-size: 1.35rem; }
+      .qa-content h1 { font-size: 2.8rem; }
+    }
+  </style>
+</head>
+<body>
+  <main class="deck">
+
+    <!-- Slide 1: Capa -->
+    <section class="slide slide--cover active" data-slide="1">
+      <div class="stripe">
+        <span style="background: var(--bloco-1)"></span>
+        <span style="background: var(--bloco-2)"></span>
+        <span style="background: var(--bloco-3)"></span>
+        <span style="background: var(--bloco-4)"></span>
+      </div>
+      <div class="cover-content">
+        <p class="label">Kickoff</p>
+        <h1>Integração de novo gateway de pagamento</h1>
+        <p class="subtitle">Braspag &amp; Cielo · Ecossistema BB</p>
+        <p class="date">Maio · 2026</p>
+      </div>
+    </section>
+
+    <!-- Slide 2: Agenda -->
+    <section class="slide" data-slide="2">
+      <p class="label">Agenda</p>
+      <h1>O que vamos cobrir hoje</h1>
+      <div class="agenda-grid">
+        <div class="card agenda-card--teal">
+          <div class="card-icon"><i class="ti ti-flag-3"></i></div>
+          <p class="card-label">01 · Contexto</p>
+          <p class="card-title">O que faremos</p>
+          <p class="card-desc">A decisão, o escopo e os pontos de atenção do projeto</p>
+        </div>
+        <div class="card agenda-card--purple">
+          <div class="card-icon"><i class="ti ti-route"></i></div>
+          <p class="card-label">02 · Execução</p>
+          <p class="card-title">Como faremos</p>
+          <p class="card-desc">Cronograma, sequência de blocos e marcos de go-live</p>
+        </div>
+        <div class="card agenda-card--amber">
+          <div class="card-icon"><i class="ti ti-messages"></i></div>
+          <p class="card-label">03 · Governança</p>
+          <p class="card-title">Como comunicaremos</p>
+          <p class="card-desc">Rituais, canais e plano de migração</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 3: Por que -->
+    <section class="slide" data-slide="3">
+      <p class="label">Slide 03 · Contexto</p>
+      <h1>Por que esse projeto existe</h1>
+      <p class="lead">Decisão estratégica da diretoria por consolidar a operação de pagamentos no ecossistema BB.</p>
+      <div class="from-to">
+        <div class="from-to-card">
+          <p class="from-to-label">Hoje</p>
+          <p class="from-to-text">Gateway atual</p>
+        </div>
+        <i class="ti ti-arrow-narrow-right from-to-arrow"></i>
+        <div class="from-to-card from-to-card--highlight">
+          <p class="from-to-label">Destino</p>
+          <p class="from-to-text">Braspag + Cielo</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 4: Premissas -->
+    <section class="slide" data-slide="4">
+      <p class="label">Slide 04 · Premissas</p>
+      <h1>Pontos de atenção e premissas</h1>
+      <div class="premise-list">
+        <div class="premise-item">
+          <div class="premise-num">01</div>
+          <i class="ti ti-shield-check premise-icon"></i>
+          <div class="premise-content">
+            <p class="premise-title">Cronograma conservador</p>
+            <p class="premise-desc">Segurança de testes acima de velocidade, evitando atritos no usuário final.</p>
+          </div>
+        </div>
+        <div class="premise-item">
+          <div class="premise-num">02</div>
+          <i class="ti ti-credit-card premise-icon"></i>
+          <div class="premise-content">
+            <p class="premise-title">Migração de assinaturas</p>
+            <p class="premise-desc">Via tokens de cartão de crédito, modelo já validado em projetos anteriores.</p>
+          </div>
+        </div>
+        <div class="premise-item">
+          <div class="premise-num">03</div>
+          <i class="ti ti-arrows-left-right premise-icon"></i>
+          <div class="premise-content">
+            <p class="premise-title">Coexistência de sistemas</p>
+            <p class="premise-desc">Gateways novo e antigo conviverão por período prolongado para reembolsos.</p>
+          </div>
+        </div>
+        <div class="premise-item">
+          <div class="premise-num">04</div>
+          <i class="ti ti-arrow-back-up premise-icon"></i>
+          <div class="premise-content">
+            <p class="premise-title">Estratégia de rollback</p>
+            <p class="premise-desc">Em caso de erro, desligamos o método e voltamos ao antigo.</p>
+          </div>
+        </div>
+        <div class="premise-item">
+          <div class="premise-num">05</div>
+          <i class="ti ti-toggle-right premise-icon"></i>
+          <div class="premise-content">
+            <p class="premise-title">Plano de virada</p>
+            <p class="premise-desc">Definido método a método, com possibilidade de teste A/B no go-live.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 5: Cronograma -->
+    <section class="slide" data-slide="5">
+      <p class="label">Slide 05 · Cronograma</p>
+      <h1>Cronograma do projeto</h1>
+      <div class="cronograma-wrapper">
+        <img src="cronograma.png" alt="Cronograma do projeto com 4 blocos, de junho a dezembro de 2026.">
+      </div>
+    </section>
+
+    <!-- Slide 6: Comunicação -->
+    <section class="slide" data-slide="6">
+      <p class="label">Slide 06 · Governança</p>
+      <h1>Como comunicaremos</h1>
+      <div class="comm-grid">
+        <div class="card comm-card">
+          <div class="card-icon"><i class="ti ti-calendar-event"></i></div>
+          <p class="card-label">Ritual fixo</p>
+          <p class="card-title">Reunião quinzenal</p>
+          <p class="card-desc">Ponto de controle com status, riscos e próximos go-lives.</p>
+        </div>
+        <div class="card comm-card">
+          <div class="card-icon"><i class="ti ti-message-circle-2"></i></div>
+          <p class="card-label">Canal contínuo</p>
+          <p class="card-title">Canal no Slack</p>
+          <p class="card-desc">Dúvidas pontuais, decisões e convocação de reuniões ad-hoc.</p>
+        </div>
+        <div class="card comm-card">
+          <div class="card-icon"><i class="ti ti-users"></i></div>
+          <p class="card-label">Sob demanda</p>
+          <p class="card-title">Reuniões específicas</p>
+          <p class="card-desc">Riscos, mitigações e plano de migração por bloco.</p>
+        </div>
+      </div>
+      <div class="comm-callout">
+        <i class="ti ti-info-circle"></i>
+        <p>O plano de migração de cada bloco será discutido em reunião dedicada quando o go-live se aproximar.</p>
+      </div>
+    </section>
+
+    <!-- Slide 7: Perguntas -->
+    <section class="slide slide--cover" data-slide="7">
+      <div class="qa-content">
+        <div class="qa-icon"><i class="ti ti-help"></i></div>
+        <h1>Perguntas?</h1>
+        <p class="subtitle">Vamos discutir</p>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="counter" id="counter">1 / 7</div>
+  <div class="hint" id="hint">← → para navegar · F para fullscreen</div>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const counter = document.getElementById('counter');
+    const hint = document.getElementById('hint');
+    let current = 0;
+
+    function go(n) {
+      const next = Math.max(0, Math.min(slides.length - 1, n));
+      if (next === current) return;
+      slides[current].classList.remove('active');
+      slides[next].classList.add('active');
+      current = next;
+      counter.textContent = (current + 1) + ' / ' + slides.length;
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault();
+        go(current + 1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp' || e.key === 'Backspace') {
+        e.preventDefault();
+        go(current - 1);
+      } else if (e.key === 'Home') {
+        go(0);
+      } else if (e.key === 'End') {
+        go(slides.length - 1);
+      } else if (e.key === 'f' || e.key === 'F') {
+        if (document.fullscreenElement) {
+          document.exitFullscreen();
+        } else {
+          document.documentElement.requestFullscreen();
+        }
+      }
+    });
+
+    requestAnimationFrame(() => hint.classList.add('fade'));
+  </script>
+</body>
+</html>
